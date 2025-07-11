@@ -91,9 +91,19 @@ const Comments = ({postId}) => {
             />
           )}
 
-          {data.map((comment) => (
+          {/* {data.map((comment) => (
             <Comment key={comment._id} comment={comment} postId={postId} />
-          ))}
+          ))} */}
+          {data.map((comment, index) =>
+  comment && comment._id ? (
+    <Comment key={comment._id} comment={comment} postId={postId} />
+  ) : (
+    <div key={index} className="text-red-500 text-sm">
+      Invalid comment data
+    </div>
+  )
+)}
+
         </>
       )}
     </div>
