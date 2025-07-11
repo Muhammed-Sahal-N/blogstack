@@ -12,6 +12,10 @@ const Comment = ({comment,postId}) => {
 
   const queryClient = useQueryClient();
 
+  if (!comment || !comment._id || !comment.user) {
+    return null;
+  }
+
   const mutation = useMutation({
     mutationFn: async () => {
       const token = await getToken();
