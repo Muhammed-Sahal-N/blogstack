@@ -1,67 +1,43 @@
-import React, { useRef } from 'react'
-import { toast } from 'react-toastify';
-import {IKContext, IKUpload} from 'imagekitio-react'
+import React from 'react';
+import { IKUpload } from 'imagekitio-react';
+import axios from 'axios';
 
 const authenticator = async () => {
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/posts/upload-auth`
-      );
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Request failed with status ${response.status}: ${errorText}`
-        );
-      }
-  
-      const data = await response.json();
-      const { signature, expire, token } = data;
-      return { signature, expire, token };
+        // Fetch the signature, token, and expire timestamp from your backend
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/posts/upload-auth`);
+        return response.data;
     } catch (error) {
-      throw new Error(`Authentication request failed: ${error.message}`);
+        console.error("Authentication request failed:", error);
+        throw new Error(`Authentication failed: ${error.message}`);
     }
-  };
+};
 
-const Upload = ( {children, type, setProgress, setData}) => {
-
-    const ref = useRef(null)
-
-
+const Upload = ({ onUploadSuccess }) => {
     const onError = (err) => {
-        console.log(err);
-        toast.error("Image upload failed!");
-      };
-      const onSuccess = (res) => {
-        console.log(res);
-        setData(res);
-      };
-      const onUploadProgress = (progress) => {
-        console.log(progress);
-        setProgress(Math.round((progress.loaded / progress.total) * 100));
-      };
+        console.error("Upload error:", err);
+    };
 
-  return (
-    <IKContext
-      publicKey={import.meta.env.VITE_IK_PUBLIC_KEY}
-      urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
-      authenticator={authenticator}
-    >
-      <IKUpload
-      // fileName='test-upload.png'
-         useUniqueFileName
-        onError={onError}
-        onSuccess={onSuccess}
-        onUploadProgress={onUploadProgress}
-        className="hidden"
-        ref={ref}
-        accept={`${type}/*`}
-      />
-      <div className="cursor-pointer" onClick={() => ref.current.click()}>
-        {children}
-      </div>
-    </IKContext>
-  )
-}
+    const onSuccess = (res) => {
+        console.log("Upload success:", res);
+        if (onUploadSuccess) {
+            onUploadSuccess(res.url); // Using res.url is often more direct
+        }
+    };
 
-export default Upload
+    return (
+        <div>
+            <IKUpload
+                publicKey={import.meta.env.VITE_IK_PUBLIC_KEY}
+                urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
+                onError={onError}
+                onSuccess={onSuccess}
+                authenticator={authenticator}
+                useUniqueFileName={true}
+            />
+            <p>Click above to upload a new cover image.</p>
+        </div>
+    );
+};
+
+export default Upload;
