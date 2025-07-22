@@ -16,27 +16,27 @@ const authenticator = async () => {
 const Upload = ({ onUploadSuccess }) => {
     const onError = (err) => {
         console.error("Upload error:", err);
-    };
+      };
 
-    const onSuccess = (res) => {
+      const onSuccess = (res) => {
         console.log("Upload success:", res);
         if (onUploadSuccess) {
             onUploadSuccess(res.url); // Using res.url is often more direct
         }
-    };
+      };
 
-    return (
+  return (
         <div>
             <IKUpload
-                publicKey={import.meta.env.VITE_IK_PUBLIC_KEY}
-                urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
-                onError={onError}
-                onSuccess={onSuccess}
+      publicKey={import.meta.env.VITE_IK_PUBLIC_KEY}
+      urlEndpoint={import.meta.env.VITE_IK_URL_ENDPOINT}
+        onError={onError}
+        onSuccess={onSuccess}
                 authenticator={authenticator}
                 useUniqueFileName={true}
             />
             <p>Click above to upload a new cover image.</p>
-        </div>
+      </div>
     );
 };
 
