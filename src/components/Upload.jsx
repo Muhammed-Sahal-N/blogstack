@@ -21,7 +21,7 @@ const Upload = ({ onUploadSuccess }) => {
       const onSuccess = (res) => {
         console.log("Upload success:", res);
         if (onUploadSuccess) {
-            onUploadSuccess(res.url); // Using res.url is often more direct
+            onUploadSuccess(res); // Pass the whole response object
         }
       };
 

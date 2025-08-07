@@ -27,7 +27,8 @@ const Write = () => {
     img && setValue((prev) => prev + `<p><image src="${img.url}"/></p>`);
   }, [img]);
   useEffect(() => {
-    cover && setVal((prev) => prev + `<p><image src="${img.url}"/></p>`);
+    console.log("Cover updated:", cover);
+    cover && setVal((prev) => prev + `<p><image src="${cover.filePath}"/></p>`);
   }, [cover]);
 
  
@@ -62,6 +63,8 @@ const Write = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
+    console.log("Cover object at submit:", cover);
+
     const data = {
       img: cover.filePath || "",
       title: formData.get("title"),
@@ -70,7 +73,7 @@ const Write = () => {
       content: value,
     };
 
-    console.log(data);
+    console.log("Post data:", data);
 
     mutation.mutate(data);
   };
@@ -84,7 +87,7 @@ const Write = () => {
       <h1 className="text-cl font-light">Create a New Post</h1>
       <form onSubmit={handleSubmit}  className="flex flex-col gap-6 flex-1 mb-6">
       
-    <Upload type='image' setProgress={setProgress} setData={setCover} >
+    <Upload onUploadSuccess={setCover} >
     <button className="w-max p-2 shadow-md rounded-xl text-sm text-gray-500 bg-white">
             Add a cover image
     </button>
@@ -125,13 +128,13 @@ const Write = () => {
           placeholder="A Short Description"
         />
         <div className="flex flex-1 ">
-          <div className="flex flex-col gap-2 mr-2 w-100">
+          {/* <div className="flex flex-col gap-2 mr-2 w-100">
           <Upload type='image' setProgress={setProgress} setData={setImg}  >
           <i class="fa-solid fa-image"></i>
           </Upload>
           
 
-          </div>
+          </div> */}
          
         
 
@@ -140,7 +143,7 @@ const Write = () => {
             readOnly={0<progress && progress<100}/>
         </div>
         <button  disabled={mutation.isPending || (0<progress && progress<100)} className="bg-blue-800 text-white font-medium rounded-xl mt-4 p-2 w-36 disabled:bg-blue-400 disabled:cursor-not-allowed ">{mutation.isPending ? "Loading..." : "Upload"}</button>
-        {"progress:" + progress}
+        {/* {"progress:" + progress} */}
         {/* {mutation.isError && <span>{mutation.error.message}</span>} */}
       </form>
 
